@@ -1,0 +1,158 @@
+<!doctype html>
+
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+
+    <meta name="theme-color" content="#0a0a1f" />
+
+    <meta name="description" content="Wilson Interiors Operations Hub - Real-time operations management dashboard" />
+
+    <title>Wilson Interiors - Operations Hub</title>
+
+
+
+    <!-- Prevent caching -->
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+
+    <meta http-equiv="Pragma" content="no-cache" />
+
+    <meta http-equiv="Expires" content="0" />
+
+
+
+    <!-- Preconnect for performance -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link rel="preconnect" href="https://docs.google.com" crossorigin>
+
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+
+    
+
+    <!-- Fonts: Anke Devanagari for headings, Zalando Sans for body -->
+
+    <link href="https://fonts.googleapis.com/css2?family=Anke+Devanagari:wght@400..800&display=swap" rel="stylesheet"/>
+
+    <link href="https://fonts.googleapis.com/css2?family=Zalando+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet"/>
+
+    
+
+    <!-- Font Awesome Icons -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" />
+
+
+
+    <!-- CSS -->
+
+    <link rel="stylesheet" href="styles.css" />
+
+
+
+    <!-- React 18 UMD -->
+
+    <script crossorigin="anonymous" src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Babel -->
+
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Papa Parse -->
+
+    <script crossorigin="anonymous" src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+
+    <!-- Fuse.js for fuzzy search -->
+
+    <script crossorigin="anonymous" src="https://unpkg.com/fuse.js@6.6.2/dist/fuse.min.js"></script>
+
+    <!-- Dashboard Mode Detection -->
+    <script>
+      window.DASHBOARD_MODE = 'operations'; // 'operations' or 'delivery'
+    </script>
+
+  </head>
+
+
+
+  <body>
+
+    <div id="root">
+
+      <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#a0a9c0;font-family:'Zalando Sans',sans-serif;">
+
+        <div style="text-align:center;">
+
+          <div style="font-size:48px;margin-bottom:16px;">&#x1FA61;</div>
+
+          <div style="font-size:18px;font-weight:700;">Loading Wilson Interiors...</div>
+
+          <div style="font-size:14px;margin-top:8px;opacity:0.7;">Operations Hub v2.2.0</div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    
+
+    <div id="boot-error">
+
+      <div class="panel">
+
+        <strong>Something went wrong while starting the app.</strong><br/><br/>
+
+        <pre id="boot-error-text"></pre>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Hidden print containers -->
+
+    <div id="print-note-root" aria-hidden="true"></div>
+
+
+
+    <!-- App code -->
+
+    <script type="text/babel" data-presets="react,env" src="app.js"></script>
+
+    
+
+    <!-- Service Worker Registration -->
+
+    <script>
+
+      if ('serviceWorker' in navigator) {
+
+        window.addEventListener('load', () => {
+
+          navigator.serviceWorker.register('./sw.js')
+
+            .then(registration => console.log('[SW] Registered:', registration.scope))
+
+            .catch(err => console.log('[SW] Registration failed:', err));
+
+        });
+
+      }
+
+    </script>
+
+  </body>
+
+</html>

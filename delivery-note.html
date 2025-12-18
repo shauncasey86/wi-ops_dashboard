@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delivery Note - Wilson Interiors</title>
+  <style>
+    /* ========================================
+       PRINT CONFIGURATION
+       ======================================== */
+    @page {
+      size: A4 portrait;
+      margin: 12mm 15mm;
+    }
+    
+    @media print {
+      @page {
+        size: A4 portrait !important;
+        margin: 12mm 15mm !important;
+        /* CRITICAL: Hide browser headers/footers (URL, date, page numbers) */
+        /* Chrome/Safari */
+        margin-header: 0mm;
+        margin-footer: 0mm;
+      }
+      
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      
+      /* Prevent page breaks inside critical sections */
+      .dn-header,
+      .dn-info-group,
+      .dn-foot {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+    }
+    
+    /* ========================================
+       FIREFOX PRINT INSTRUCTIONS
+       ======================================== */
+    /* 
+       IMPORTANT: Firefox requires manual browser configuration to hide headers/footers.
+       
+       To hide headers/footers in Firefox:
+       1. In the print dialog, click "More settings"
+       2. Uncheck "Print headers and footers"
+       
+       OR set in about:config:
+       - print.print_headerleft = ""
+       - print.print_headercenter = ""
+       - print.print_headerright = ""
+       - print.print_footerleft = ""
+       - print.print_footercenter = ""
+       - print.print_footerright = ""
+    */
+    
+    /* ========================================
+       BASE STYLES
+       ======================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 210mm;
+      max-width: 210mm;
+      background: white;
+      color: #1a1a1a;
+      font-size: 10pt;
+      line-height: 1.5;
+    }
+    
+    .sheet {
+      width: 100%;
+      min-height: 297mm;
+      padding: 0;
+      position: relative;
+    }
+    
+    /* ========================================
+       HEADER SECTION - TITLE ON RIGHT
+       ======================================== */
+    .dn-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8mm;
+      align-items: center;
+      padding-bottom: 6mm;
+      margin-bottom: 8mm;
+      border-bottom: 2pt solid #1a1a1a;
+      position: relative;
+    }
+    
+    .dn-header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #e0e0e0 10%, #e0e0e0 90%, transparent);
+    }
+    
+    .dn-logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 50mm;
+    }
+    
+    .dn-logo {
+      height: 18mm;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    
+    .dn-spacer {
+      flex: 1 1 auto;
+    }
+    
+    .dn-header-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2mm;
+      justify-content: center;
+      align-items: flex-end;
+      text-align: right;
+    }
+    
+    .dn-title {
+      margin: 0;
+      font-size: 22pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #1a1a1a;
+      line-height: 1;
+    }
+    
+    .dn-subtitle {
+      font-size: 9pt;
+      color: #666;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    
+    /* ========================================
+       DELIVERY INFORMATION SECTION
+       ======================================== */
+    .dn-info-group {
+      background: #fafafa;
+      border: 1px solid #e0e0e0;
+      border-radius: 3mm;
+      padding: 5mm;
+      margin-bottom: 8mm;
+    }
+    
+    .dn-section-title {
+      font-size: 9pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      margin-bottom: 4mm;
+      padding-bottom: 2mm;
+      border-bottom: 1pt solid #e0e0e0;
+    }
+    
+    .dn-info {
+      display: grid;
+      grid-template-columns: 32mm 1fr;
+      column-gap: 5mm;
+      row-gap: 3.5mm;
+    }
+    
+    .dn-row {
+      display: contents;
+    }
+    
+    .dn-label {
+      font-size: 9pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      color: #444;
+      align-self: start;
+      padding-top: 0.5mm;
+    }
+    
+    .dn-value {
+      font-size: 11pt;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #1a1a1a;
+      font-weight: 500;
+      align-self: start;
+    }
+    
+    .dn-value.large {
+      font-size: 12pt;
+      font-weight: 600;
+      color: #000;
+    }
+    
+    /* ========================================
+       NOTES SECTION
+       ======================================== */
+    .dn-notes-section {
+      margin-bottom: 10mm;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    
+    .dn-notes-header {
+      font-size: 9pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      margin-bottom: 3mm;
+      display: flex;
+      align-items: center;
+      gap: 2mm;
+    }
+    
+    .dn-notes-header::before {
+      content: '';
+      display: inline-block;
+      width: 4mm;
+      height: 4mm;
+      background: #f0f0f0;
+      border: 1pt solid #ccc;
+      border-radius: 1mm;
+    }
+    
+    .dn-notes-content {
+      background: white;
+      border: 1.5pt solid #d0d0d0;
+      border-radius: 2mm;
+      padding: 4mm;
+      min-height: 20mm;
+    }
+    
+    .dn-notes-value {
+      font-size: 10pt;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #1a1a1a;
+      margin-bottom: 2mm;
+    }
+    
+    .dn-notes-value:empty {
+      display: none;
+    }
+    
+    .dn-notes-blank {
+      min-height: 35mm;
+      border: 1pt dashed #ccc;
+      border-radius: 2mm;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 6mm,
+          #f5f5f5 6mm,
+          #f5f5f5 6.5mm
+        );
+      position: relative;
+    }
+    
+    .dn-notes-blank::after {
+      content: 'Additional notes:';
+      position: absolute;
+      top: 3mm;
+      left: 4mm;
+      font-size: 8pt;
+      color: #999;
+      font-style: italic;
+    }
+    
+    /* ========================================
+       SIGNATURE SECTION
+       ======================================== */
+    .dn-foot {
+      margin-top: 12mm;
+      padding-top: 6mm;
+      border-top: 1pt solid #e0e0e0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8mm;
+    }
+    
+    .sig {
+      display: flex;
+      flex-direction: column;
+      gap: 3mm;
+    }
+    
+    .sig-label {
+      font-size: 9pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #444;
+    }
+    
+    .sig-sublabel {
+      font-size: 8pt;
+      color: #888;
+      font-weight: 400;
+      margin-top: 1mm;
+      font-style: italic;
+    }
+    
+    .sig-line {
+      height: 22mm;
+      border: 1.5pt solid #333;
+      border-radius: 2mm;
+      background: white;
+      position: relative;
+      margin-top: 2mm;
+    }
+    
+    .sig-line::before {
+      content: '';
+      position: absolute;
+      bottom: 8mm;
+      left: 3mm;
+      right: 3mm;
+      height: 1pt;
+      background: #ddd;
+    }
+    
+    .sig-line::after {
+      content: 'Sign here';
+      position: absolute;
+      bottom: 2mm;
+      left: 3mm;
+      font-size: 7pt;
+      color: #bbb;
+      font-style: italic;
+      text-transform: none;
+    }
+    
+    /* ========================================
+       FOOTER INFO
+       ======================================== */
+    .dn-footer-info {
+      margin-top: 10mm;
+      padding-top: 4mm;
+      border-top: 1pt dashed #ddd;
+      font-size: 8pt;
+      color: #999;
+      text-align: center;
+      line-height: 1.6;
+    }
+    
+    .dn-footer-info strong {
+      color: #666;
+      font-weight: 600;
+    }
+    
+    /* ========================================
+       RESPONSIVE & UTILITY
+       ======================================== */
+    @media screen and (max-width: 800px) {
+      body {
+        width: 100%;
+        padding: 4mm;
+      }
+      
+      .dn-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .dn-logo-container {
+        justify-content: center;
+      }
+      
+      .dn-spacer {
+        display: none;
+      }
+      
+      .dn-header-content {
+        align-items: center;
+        text-align: center;
+      }
+      
+      .dn-info {
+        grid-template-columns: 1fr;
+        gap: 2mm;
+      }
+      
+      .dn-label {
+        font-size: 8pt;
+      }
+      
+      .dn-foot {
+        grid-template-columns: 1fr;
+        gap: 6mm;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <!-- HEADER - LOGO LEFT, TITLE RIGHT -->
+    <div class="dn-header">
+      <div class="dn-logo-container">
+        <img class="dn-logo" src="./img/wi-logo.svg" alt="Wilson Interiors Logo">
+      </div>
+      <div class="dn-spacer"></div>
+      <div class="dn-header-content">
+        <h1 class="dn-title">Delivery Note</h1>
+      </div>
+    </div>
+    
+    <!-- DELIVERY INFORMATION -->
+    <div class="dn-info-group">
+      <div class="dn-section-title">Delivery Information</div>
+      <div class="dn-info" id="delivery-info">
+        <!-- Populated by JavaScript -->
+      </div>
+    </div>
+    
+    <!-- NOTES SECTION -->
+    <div class="dn-notes-section">
+      <div class="dn-notes-header">Delivery Notes & Instructions</div>
+      <div class="dn-notes-content">
+        <div class="dn-notes-value" id="notes-value"></div>
+        <div class="dn-notes-blank"></div>
+      </div>
+    </div>
+    
+    <!-- SIGNATURE SECTION -->
+    <div class="dn-foot">
+      <div class="sig">
+        <div>
+          <div class="sig-label">Received By</div>
+          <div class="sig-sublabel">Print name clearly</div>
+        </div>
+        <div class="sig-line"></div>
+      </div>
+      <div class="sig">
+        <div>
+          <div class="sig-label">Signature</div>
+          <div class="sig-sublabel">Sign and date</div>
+        </div>
+        <div class="sig-line"></div>
+      </div>
+    </div>
+    
+    <!-- FOOTER -->
+    <div class="dn-footer-info">
+      <strong>Wilson Interiors</strong> • Unit 1b, Pioneer Park, Hull, HU6 7HW<br>
+      Please ensure you check the delivery on arrival with the driver. In the unlikely event of any discrepancies or damages, please notify us within 24 hours.
+    </div>
+  </div>
+
+  <script>
+    function escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = String(str);
+      return div.innerHTML;
+    }
+    
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      try {
+        const date = new Date(dateStr);
+        return new Intl.DateTimeFormat('en-GB', {
+          weekday: 'long',
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        }).format(date);
+      } catch (e) {
+        return dateStr;
+      }
+    }
+    
+    function formatDateShort(dateStr) {
+      if (!dateStr) return '-';
+      try {
+        const date = new Date(dateStr);
+        return new Intl.DateTimeFormat('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }).format(date);
+      } catch (e) {
+        return dateStr;
+      }
+    }
+    
+    // Detect Firefox and show print guidance banner
+    function showFirefoxPrintGuidance() {
+      const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
+      
+      if (isFirefox) {
+        // Create banner element
+        const banner = document.createElement('div');
+        banner.id = 'firefox-print-banner';
+        banner.innerHTML = `
+          <div style="
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ff6b35 0%, #f59e0b 100%);
+            color: white;
+            padding: 12px 20px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 10000;
+            line-height: 1.5;
+          ">
+            <strong>🔥 Firefox Print Settings:</strong> 
+            In the print dialog, click "More settings" and uncheck "Print headers and footers" 
+            for a cleaner document.
+            <button onclick="this.parentElement.parentElement.remove()" style="
+              margin-left: 12px;
+              background: rgba(255,255,255,0.2);
+              border: 1px solid rgba(255,255,255,0.3);
+              color: white;
+              padding: 4px 12px;
+              border-radius: 6px;
+              cursor: pointer;
+              font-weight: 600;
+              font-size: 12px;
+            ">Got it ✓</button>
+          </div>
+        `;
+        
+        // Only show banner on screen, not in print
+        const style = document.createElement('style');
+        style.textContent = '@media print { #firefox-print-banner { display: none !important; } }';
+        document.head.appendChild(style);
+        
+        document.body.insertBefore(banner, document.body.firstChild);
+        
+        // Auto-hide after 8 seconds
+        setTimeout(() => {
+          if (banner.parentElement) {
+            banner.style.transition = 'opacity 0.5s ease';
+            banner.style.opacity = '0';
+            setTimeout(() => banner.remove(), 500);
+          }
+        }, 8000);
+      }
+    }
+    
+    // Retrieve delivery data from localStorage
+    const deliveryData = localStorage.getItem('wilson-delivery-note-print');
+    
+    if (deliveryData) {
+      try {
+        const delivery = JSON.parse(deliveryData);
+        
+        // Populate delivery info with enhanced formatting
+        const infoHtml = `
+          <div class="dn-row">
+            <div class="dn-label">Date</div>
+            <div class="dn-value large">${formatDate(delivery.date)}</div>
+          </div>
+          <div class="dn-row">
+            <div class="dn-label">Time</div>
+            <div class="dn-value">${escapeHtml(delivery.time) || '-'}</div>
+          </div>
+          <div class="dn-row">
+            <div class="dn-label">Customer</div>
+            <div class="dn-value large">${escapeHtml(delivery.customer) || '-'}</div>
+          </div>
+          <div class="dn-row">
+            <div class="dn-label">Address</div>
+            <div class="dn-value">${escapeHtml(delivery.address) || '-'}</div>
+          </div>
+          <div class="dn-row">
+            <div class="dn-label">Postcode</div>
+            <div class="dn-value">${escapeHtml(delivery.postcode) || '-'}</div>
+          </div>
+        `;
+        
+        document.getElementById('delivery-info').innerHTML = infoHtml;
+        
+        // Populate notes if present
+        const notesValue = document.getElementById('notes-value');
+        if (delivery.notes && delivery.notes.trim()) {
+          notesValue.textContent = delivery.notes;
+        }
+        
+        // Clear localStorage after reading
+        localStorage.removeItem('wilson-delivery-note-print');
+        
+        // Show Firefox guidance banner before printing
+        showFirefoxPrintGuidance();
+        
+        // Auto-print after a brief delay to ensure rendering
+        setTimeout(function() {
+          window.print();
+          // Close window after print dialog closes (user may have cancelled)
+          setTimeout(function() {
+            window.close();
+          }, 500);
+        }, 350);
+        
+      } catch (e) {
+        console.error('Error parsing delivery data:', e);
+        document.getElementById('delivery-info').innerHTML = '<div style="color: #d32f2f; padding: 4mm; background: #ffebee; border-radius: 2mm;">Error loading delivery data. Please try again.</div>';
+      }
+    } else {
+      document.getElementById('delivery-info').innerHTML = '<div style="color: #d32f2f; padding: 4mm; background: #ffebee; border-radius: 2mm;">No delivery data found. Please generate the note from the operations dashboard.</div>';
+    }
+  </script>
+</body>
+</html>

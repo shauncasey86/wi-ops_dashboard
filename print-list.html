@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delivery List - Wilson Interiors</title>
+  <style>
+    /* ========================================
+       PRINT CONFIGURATION
+       ======================================== */
+    @page {
+      size: A4 landscape;
+      margin: 10mm 12mm;
+    }
+    
+    @media print {
+      @page {
+        size: A4 landscape !important;
+        margin: 10mm 12mm !important;
+      }
+      
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      
+      /* Prevent orphan rows */
+      .print-table tbody tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      
+      .print-table thead {
+        display: table-header-group;
+      }
+      
+      .print-table tfoot {
+        display: table-footer-group;
+      }
+    }
+    
+    /* ========================================
+       BASE STYLES
+       ======================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: white;
+      color: #1a1a1a;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    /* ========================================
+       HEADER SECTION
+       ======================================== */
+    .page-header {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 6mm;
+      align-items: center;
+      margin-bottom: 5mm;
+      padding-bottom: 4mm;
+      border-bottom: 2pt solid #1a1a1a;
+      position: relative;
+    }
+    
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #ccc 10%, #ccc 90%, transparent);
+    }
+    
+    .header-logo {
+      height: 14mm;
+      width: auto;
+      object-fit: contain;
+    }
+    
+    .header-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5mm;
+    }
+    
+    .page-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #1a1a1a;
+      line-height: 1;
+    }
+    
+    .page-subtitle {
+      font-size: 10px;
+      color: #666;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    
+    .header-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 1mm;
+      font-size: 9px;
+      color: #666;
+    }
+    
+    .meta-row {
+      display: flex;
+      gap: 4mm;
+      align-items: center;
+    }
+    
+    .meta-label {
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+    
+    .meta-value {
+      font-weight: 500;
+    }
+    
+    /* Manufacturing totals in header */
+    .mfg-totals {
+      display: none; /* Hidden by default */
+      margin-top: 2mm;
+      padding-top: 2mm;
+      border-top: 1pt solid #ddd;
+    }
+    
+    body:not(.hide-hours) .mfg-totals {
+      display: block;
+    }
+    
+    /* ========================================
+       TABLE STYLES
+       ======================================== */
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 9px;
+      line-height: 1.3;
+    }
+    
+    /* Column widths - WITH HOURS COLUMN */
+    body:not(.hide-hours) .print-table colgroup col:nth-child(1)  { width: 6%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(2)  { width: 4.5%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(3)  { width: 8%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(4)  { width: 20%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(5)  { width: 6.5%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(6)  { width: 8%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(7)  { width: 9%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(8)  { width: 3.5%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(9)  { width: 3.5%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(10) { width: 3%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(11) { width: 3%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(12) { width: 3.5%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(13) { width: 12.5%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(14) { width: 4%; }
+    body:not(.hide-hours) .print-table colgroup col:nth-child(15) { width: 4.5%; }
+    
+    /* Column widths - WITHOUT HOURS COLUMN */
+    body.hide-hours .print-table colgroup col:nth-child(1)  { width: 6%; }
+    body.hide-hours .print-table colgroup col:nth-child(2)  { width: 4.5%; }
+    body.hide-hours .print-table colgroup col:nth-child(3)  { width: 8%; }
+    body.hide-hours .print-table colgroup col:nth-child(4)  { width: 24.5%; }
+    body.hide-hours .print-table colgroup col:nth-child(5)  { width: 6.5%; }
+    body.hide-hours .print-table colgroup col:nth-child(6)  { width: 8%; }
+    body.hide-hours .print-table colgroup col:nth-child(7)  { width: 9%; }
+    body.hide-hours .print-table colgroup col:nth-child(8)  { width: 3.5%; }
+    body.hide-hours .print-table colgroup col:nth-child(9)  { width: 3.5%; }
+    body.hide-hours .print-table colgroup col:nth-child(10) { width: 3%; }
+    body.hide-hours .print-table colgroup col:nth-child(11) { width: 3%; }
+    body.hide-hours .print-table colgroup col:nth-child(12) { width: 3.5%; }
+    body.hide-hours .print-table colgroup col:nth-child(13) { width: 12.5%; }
+    body.hide-hours .print-table colgroup col:nth-child(14) { width: 4%; }
+    
+    .print-table th,
+    .print-table td {
+      border: 0.5pt solid #333;
+      padding: 2px 3px;
+      vertical-align: top;
+      overflow: hidden;
+    }
+    
+    /* Hide hours column when body has .hide-hours class */
+    body.hide-hours .hours-col {
+      display: none;
+    }
+    
+    /* ========================================
+       TABLE HEADER
+       ======================================== */
+    .print-table thead {
+      background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
+    }
+    
+    .print-table thead th {
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      text-align: center;
+      padding: 3px 2px;
+      border-color: #444;
+    }
+    
+    /* Delivery columns - blue gradient */
+    .print-table thead th:nth-child(1),
+    .print-table thead th:nth-child(2),
+    .print-table thead th:nth-child(3),
+    .print-table thead th:nth-child(4),
+    .print-table thead th:nth-child(5)
+    {
+      background: linear-gradient(180deg, #2a5a8a 0%, #1a4a7a 100%);
+    }
+    
+    /* Manufacturing columns - green gradient */
+    .print-table thead th:nth-child(6),
+    .print-table thead th:nth-child(7),
+    .print-table thead th:nth-child(8),
+    .print-table thead th:nth-child(9),
+    .print-table thead th:nth-child(10),
+    .print-table thead th:nth-child(11),
+    .print-table thead th:nth-child(12),
+    .print-table thead th:nth-child(13),
+    .print-table thead th:nth-child(14),
+    .print-table thead th:nth-child(15)
+    {
+      background: linear-gradient(180deg, #4a6a3a 0%, #3a5a2a 100%);
+    }
+    
+    /* ========================================
+       TABLE BODY - DAY-BASED ALTERNATING ROWS
+       ======================================== */
+    .print-table tbody tr {
+      background: white;
+    }
+    
+    /* Alternating day highlighting */
+    .print-table tbody tr.alt-day {
+      background: #f8f8f8;
+    }
+    
+    /* First row of each day gets top border */
+    .print-table tbody tr.day-start td {
+      border-top: 2pt solid #333;
+    }
+    
+    .print-table tbody tr:hover {
+      background: #f0f0f0;
+    }
+    
+    .print-table tbody td {
+      font-size: 9px;
+      color: #1a1a1a;
+      border-color: #ddd;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    /* Address column - allows wrapping */
+    .print-table td.address {
+      white-space: normal;
+      word-wrap: break-word;
+      word-break: break-word;
+      hyphens: auto;
+      line-height: 1.3;
+      font-size: 8.5px;
+    }
+    
+    /* Customer, Door, WTop can wrap if needed */
+    .print-table td:nth-child(3),
+    .print-table td:nth-child(6),
+    .print-table td:nth-child(7)
+    {
+      white-space: normal;
+      line-height: 1.25;
+    }
+    
+    /* Center-aligned columns */
+    .print-table td.center,
+    .print-table th.center {
+      text-align: center;
+    }
+    
+    /* Customer - slightly bold */
+    .print-table tbody td:nth-child(3) {
+      font-weight: 600;
+    }
+    
+    /* Empty cells - visual indicator */
+    .print-table tbody td:empty::after {
+      content: '-';
+      color: #ccc;
+      font-weight: 300;
+    }
+    
+    
+    /* ========================================
+       NOTES SECTION
+       ======================================== */
+    .notes-section {
+      margin-top: 6mm;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    
+    .notes-header {
+      display: flex;
+      align-items: baseline;
+      gap: 3mm;
+      margin-bottom: 2mm;
+      padding-bottom: 1.5mm;
+      border-bottom: 1.5pt solid #000;
+    }
+    
+    .notes-title {
+      margin: 0;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #000;
+    }
+    
+    .notes-subtitle {
+      font-size: 8px;
+      color: #666;
+      font-weight: 500;
+      font-style: italic;
+    }
+    
+    .notes-lines {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 3mm;
+    }
+    
+    .notes-line {
+      height: 8mm;
+      border-bottom: 0.5pt solid #d0d0d0;
+      position: relative;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 7.5mm,
+          #f8f8f8 7.5mm,
+          #f8f8f8 8mm
+        );
+    }
+    
+    .notes-line:first-child {
+      border-top: 0.5pt solid #d0d0d0;
+    }
+    
+    /* Optional: Add faint guide dots on left margin */
+    .notes-line::before {
+      content: '';
+      position: absolute;
+      left: 4mm;
+      top: 0;
+      bottom: 0;
+      width: 1pt;
+      background: 
+        repeating-linear-gradient(
+          180deg,
+          #e8e8e8,
+          #e8e8e8 1mm,
+          transparent 1mm,
+          transparent 2mm
+        );
+    }
+    
+    /* ========================================
+       FOOTER INFO
+       ======================================== */
+    .page-footer {
+      margin-top: 4mm;
+      padding-top: 3mm;
+      border-top: 1pt dashed #ccc;
+      font-size: 8px;
+      color: #999;
+      text-align: center;
+      line-height: 1.5;
+    }
+    
+    .page-footer strong {
+      color: #666;
+      font-weight: 600;
+    }
+    
+    @media screen {
+      body {
+        padding: 4mm;
+        max-width: 297mm;
+        margin: 0 auto;
+      }
+      
+      .page-header {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding-bottom: 5mm;
+      }
+      
+      .print-table {
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <div class="page-header">
+    <img class="header-logo" src="./img/wi-logo.svg" alt="Wilson Interiors Logo">
+    <div class="header-title-group">
+      <h1 class="page-title" id="title">Loading...</h1>
+      <div class="page-subtitle">Operations Schedule • Manufacturing & Delivery</div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-row">
+        <span class="meta-label">Printed:</span>
+        <span class="meta-value" id="print-date">—</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">Total Deliveries:</span>
+        <span class="meta-value" id="total-count">—</span>
+      </div>
+      <div class="mfg-totals" id="mfg-totals"></div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <table class="print-table">
+    <colgroup>
+      <col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col /><col />
+      <col class="hours-col" />
+    </colgroup>
+    <thead>
+      <tr>
+        <th class="center">Date</th>
+        <th class="center">Time</th>
+        <th class="center">Customer</th>
+        <th>Address</th>
+        <th class="center">Postcode</th>
+        <th class="center">Door</th>
+        <th class="center">WTop</th>
+        <th class="center">Base</th>
+        <th class="center">Wall</th>
+        <th class="center">BE</th>
+        <th class="center">WE</th>
+        <th class="center">Plth</th>
+        <th class="center">WTL</th>
+        <th class="center">SBL</th>
+        <th class="center hours-col">Hrs</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+  <!-- NOTES SECTION -->
+  <div class="notes-section">
+    <div class="notes-header">
+      <h3 class="notes-title">Notes</h3>
+      <div class="notes-subtitle">Additional observations, changes, or follow-up items</div>
+    </div>
+    <div class="notes-lines">
+      <div class="notes-line"></div>
+      <div class="notes-line"></div>
+      <div class="notes-line"></div>
+      <div class="notes-line"></div>
+      <div class="notes-line"></div>
+      <div class="notes-line"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="page-footer">
+    <strong>Wilson Interiors</strong> • For internal use only<br>
+    Document generated from Operations Hub
+  </div>
+
+  <script>
+    function escapeHtml(str) {
+      if (!str) return '';
+      const div = document.createElement('div');
+      div.textContent = String(str);
+      return div.innerHTML;
+    }
+    
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      try {
+        const date = new Date(dateStr);
+        return new Intl.DateTimeFormat('en-GB', {
+          day: '2-digit',
+          month: '2-digit',
+          year: '2-digit'
+        }).format(date);
+      } catch (e) {
+        return '';
+      }
+    }
+    
+    function formatDateTime(date) {
+      return new Intl.DateTimeFormat('en-GB', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }).format(date);
+    }
+    
+    function calculateTotals(deliveries) {
+      let jcTotal = 0, jcCount = 0, kwlTotal = 0, kwlCount = 0;
+      
+      deliveries.forEach(d => {
+        const customer = String(d.customer || '').toUpperCase();
+        const hours = parseFloat(d.manHours) || 0;
+        
+        if (hours > 0) {
+          if (customer.includes('JC')) {
+            jcTotal += hours;
+            jcCount++;
+          }
+          if (customer.includes('KWL')) {
+            kwlTotal += hours;
+            kwlCount++;
+          }
+        }
+      });
+      
+      return {
+        jc: { total: jcTotal.toFixed(1), count: jcCount },
+        kwl: { total: kwlTotal.toFixed(1), count: kwlCount }
+      };
+    }
+    
+    function getDateKey(dateStr) {
+      if (!dateStr) return 'unknown';
+      const date = new Date(dateStr);
+      return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    }
+    
+    // Set print date/time
+    document.getElementById('print-date').textContent = formatDateTime(new Date());
+    
+    // Retrieve print data from localStorage
+    const printData = localStorage.getItem('wilson-print-list-data');
+    
+    if (printData) {
+      try {
+        const data = JSON.parse(printData);
+        const deliveries = data.deliveries || [];
+        const title = data.title || 'Delivery Schedule';
+        const includeHoursColumn = data.includeHoursColumn !== false;
+        
+        // Set body class based on includeHoursColumn
+        if (!includeHoursColumn) {
+          document.body.classList.add('hide-hours');
+        }
+        
+        // Set header info
+        document.getElementById('title').textContent = title;
+        document.getElementById('total-count').textContent = deliveries.length;
+        
+        // Calculate totals
+        const totals = calculateTotals(deliveries);
+        
+        // Add manufacturing totals to header if hours column is shown
+        if (includeHoursColumn) {
+          const mfgTotals = document.getElementById('mfg-totals');
+          mfgTotals.innerHTML = `
+            <div class="meta-row">
+              <span class="meta-label">JC Total:</span>
+              <span class="meta-value">${totals.jc.total} hrs (${totals.jc.count} ${totals.jc.count === 1 ? 'delivery' : 'deliveries'})</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">KWL Total:</span>
+              <span class="meta-value">${totals.kwl.total} hrs (${totals.kwl.count} ${totals.kwl.count === 1 ? 'delivery' : 'deliveries'})</span>
+            </div>
+          `;
+        }
+        
+        // Group deliveries by date for alternating day highlighting
+        let currentDateKey = null;
+        let isAltDay = false;
+        
+        // Build table rows with day-based alternating highlighting
+        const tbody = document.getElementById('table-body');
+        const rows = deliveries.map((d) => {
+          const dateFormatted = formatDate(d.date);
+          const dateKey = getDateKey(d.date);
+          
+          // Check if this is a new day
+          const isDayStart = dateKey !== currentDateKey;
+          if (isDayStart) {
+            currentDateKey = dateKey;
+            isAltDay = !isAltDay;
+          }
+          
+          // Build row classes
+          const rowClasses = [];
+          if (isDayStart) rowClasses.push('day-start');
+          if (isAltDay) rowClasses.push('alt-day');
+          
+          const classAttr = rowClasses.length > 0 ? ` class="${rowClasses.join(' ')}"` : '';
+          
+          return `
+            <tr${classAttr}>
+              <td class="center">${dateFormatted}</td>
+              <td class="center">${escapeHtml(d.time) || ''}</td>
+              <td>${escapeHtml(d.customer) || ''}</td>
+              <td class="address">${escapeHtml(d.address) || ''}</td>
+              <td class="center">${escapeHtml(d.postcode) || ''}</td>
+              <td class="center">${escapeHtml(d.doorColour) || ''}</td>
+              <td class="center">${escapeHtml(d.wtopColour) || ''}</td>
+              <td class="center">${escapeHtml(d.baseUnits) || ''}</td>
+              <td class="center">${escapeHtml(d.wallUnits) || ''}</td>
+              <td class="center">${escapeHtml(d.baseEnds) || ''}</td>
+              <td class="center">${escapeHtml(d.wallEnds) || ''}</td>
+              <td class="center">${escapeHtml(d.plinths) || ''}</td>
+              <td class="center">${escapeHtml(d.wtopLength) || ''}</td>
+              <td class="center">${escapeHtml(d.tekLength) || ''}</td>
+              <td class="center hours-col">${escapeHtml(d.manHours) || ''}</td>
+            </tr>
+          `;
+        }).join('');
+        
+        tbody.innerHTML = rows;
+        
+        // Clear localStorage after reading
+        localStorage.removeItem('wilson-print-list-data');
+        
+        // Auto-print after ensuring full render
+        setTimeout(function() {
+          window.print();
+          setTimeout(function() {
+            window.close();
+          }, 500);
+        }, 350);
+        
+      } catch (e) {
+        console.error('Error parsing print data:', e);
+        document.getElementById('title').textContent = 'Error Loading Data';
+        document.getElementById('table-body').innerHTML = '<tr><td colspan="15" style="color: #d32f2f; padding: 4mm; background: #ffebee; text-align: center;">Error loading delivery data. Please try again.</td></tr>';
+      }
+    } else {
+      document.getElementById('title').textContent = 'No Data Available';
+      document.getElementById('table-body').innerHTML = '<tr><td colspan="15" style="color: #d32f2f; padding: 4mm; background: #ffebee; text-align: center;">No print data found. Please generate the list from the operations dashboard.</td></tr>';
+    }
+  </script>
+</body>
+</html>
